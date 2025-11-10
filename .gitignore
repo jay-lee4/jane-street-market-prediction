@@ -45,3 +45,7 @@ results/*.txt
 .env
 venv/
 env/
+
+# CSV
+echo "*.csv" > data/.gitignore
+echo "!.gitignore" >> data/.gitignore
