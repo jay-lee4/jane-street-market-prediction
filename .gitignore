@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data files
+data/*.csv
+data/*.zip
+data/*.parquet
+
+# Model files
+*.pkl
+*.h5
+*.model
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Results (keep structure, not files)
+results/*.json
+results/*.csv
+results/*.png
+results/*.txt
+!results/README.md
+!results/.gitkeep
+
+# Environment
+.env
+venv/
+env/
