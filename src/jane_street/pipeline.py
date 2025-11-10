@@ -4,20 +4,25 @@ data -> features -> model -> evaluation.
 from .data.loader import DataLoader
 from .features.pca import PCAReducer
 from .models.xgboost_model import XGBoostModel
+from .models.ensemble import Ensemble
 from .evaluation.cross_validation import cross_validate
 
 
 class Pipeline:
-    """Complete pipeline for Jane Street prediction."""
     
-    def __init__(self, data_path, apply_pca=True, random_state=42):
+    def __init__(self, data_path, apply_pca=True, use_ensemble=True, random_state=42):
         self.data_path = data_path
         self.apply_pca = apply_pca
+        self.use_ensemble = use_ensemble
         self.random_state = random_state
         
         self.loader = DataLoader(data_path)
         self.pca = PCAReducer(random_state=random_state) if apply_pca else None
-        self.model = XGBoostModel(random_state=random_state)
+        
+        if use_ensemble:
+            self.model = Ensemble(random_state=random_state)
+        else:
+            self.model = XGBoostModel(random_state=random_state)
         
         self.X = None
         self.y = None
@@ -39,7 +44,7 @@ class Pipeline:
         self.X = X
         self.y = y
         self.weights = weights
-        self.returns = y.copy()
+        self.returns = y.copy()  # TODO: use actual returns if available
         self.metadata = metadata
         
         return X, y, weights, metadata
@@ -87,6 +92,7 @@ class Pipeline:
             'n_features_final': self.X.shape[1] if self.X is not None else None,
             'pca_applied': self.apply_pca,
             'model': self.model.name,
+            'use_ensemble': self.use_ensemble,
         }
         
         if self.apply_pca and self.pca:
@@ -95,6 +101,6 @@ class Pipeline:
         return summary
 
 
-def create_pipeline(data_path='data/train.csv', apply_pca=True, random_state=42):
+def create_pipeline(data_path='data/train.csv', apply_pca=True, use_ensemble=True, random_state=42):
     """Factory function to create configured pipeline."""
-    return Pipeline(data_path, apply_pca=apply_pca, random_state=random_state)
+    return Pipeline(data_path, apply_pca=apply_pca, use_ensemble=use_ensemble, random_state=random_state)
